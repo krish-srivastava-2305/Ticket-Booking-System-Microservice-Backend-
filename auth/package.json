@@ -11,8 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.97",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "mogoose": "^0.0.1-security",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   }

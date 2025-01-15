@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { validationResult } from "express-validator";   
+import { validationResult } from "express-validator"; 
+import { User } from "../models/user.model"  
 import { RequestValidationError } from "../errors/request-validation.error";
+import { BadRequestErroor } from "../errors/bad-request-error";
 
 const signupController = async (req: Request, res: Response, next: any) : Promise<any> => {
     try {
@@ -8,10 +10,18 @@ const signupController = async (req: Request, res: Response, next: any) : Promis
         if(!errors.isEmpty()) {
             throw new RequestValidationError(errors.array());
         }
-        const { email, password } = req.body;
+        const { email, password } = req.body;  
 
-        console.log("Signing up user with email: ", email);
-        return res.send("New User");
+        const existingUser = await User.findOne({email});
+        if(existingUser) {
+            throw new BadRequestErroor("Email in use");
+        }
+        
+        const user = User.build({email, password});
+        await user.save();
+
+        res.status(201).send(user);
+
     } catch (error) {
         console.log(error);
         next(error);

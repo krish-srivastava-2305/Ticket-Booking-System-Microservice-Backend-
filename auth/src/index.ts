@@ -1,4 +1,5 @@
 import express, { json } from "express";
+import mongoose from "mongoose";
 
 const app = express();
 
@@ -23,6 +24,22 @@ app.all("*", () => {
     throw new NotFoundError()
 })
 app.use(errorHandler);
-app.listen(3000, () => {
-    console.log("Listensing at http://localhost:3000");
-})
+
+const connect = async () => {
+    try {
+        const connection = await mongoose.connect("mongodb://auth-mongo-cluster-srv:27017/auth");
+        console.log("Connected to MongoDB");
+    }  catch (err) {
+        console.log(err);
+    }
+
+    app.listen(3000, () => {
+        console.log("Listensing at http://localhost:3000");
+    })
+}
+
+connect();
+
+
+
+
