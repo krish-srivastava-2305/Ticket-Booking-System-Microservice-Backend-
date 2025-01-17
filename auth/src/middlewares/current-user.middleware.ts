@@ -16,16 +16,15 @@ declare global {
 }
 
 export async function currentUserMiddleware(req: Request, res: Response, next: NextFunction) {
+    if(!req.session?.token) {
+        return next();
+    }
     try {
-        if(!req.session?.token) {
-            throw new BadRequestErroor("User not logged in");
-        }
         const token = req.session.token;
         const payload = jwt.verify(token, process.env.JWT_SECRET_KEY!) as currentUser;
         req.currentUser = payload;
-        next();
     } catch(err) {
         console.error(err);
-        next(err);
     }
+    next();
 }

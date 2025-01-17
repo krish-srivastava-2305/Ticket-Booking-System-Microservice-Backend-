@@ -33,7 +33,6 @@ const signupController = async (req: Request, res: Response, next: any) : Promis
         });
 
     } catch (error) {
-        console.log(error);
         next(error);
     }
 }

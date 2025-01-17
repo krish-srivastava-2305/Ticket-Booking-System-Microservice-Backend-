@@ -17,4 +17,11 @@ spec:
                 name: auth-cluster-srv
                 port:
                   number: 3000
+          - path: /?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: client-cluster-srv
+                port:
+                  number: 3000
           

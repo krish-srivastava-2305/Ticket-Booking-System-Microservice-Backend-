@@ -31,7 +31,6 @@ const signinController = async (req: Request, res: Response, next: NextFunction)
 
         return res.status(200).send({id: user._id, email: user.email});
     } catch (error) {
-        console.log(error);
         next(error);
     }
 }
