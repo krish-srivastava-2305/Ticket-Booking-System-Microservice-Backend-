@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { validationResult } from "express-validator"; 
 import { User } from "../models/user.model"  
-import { RequestValidationError } from "../errors/request-validation.error";
-import { BadRequestErroor } from "../errors/bad-request-error";
+import { RequestValidationError } from "@ksticketinservice/common";
+import { BadRequestErroor } from "@ksticketinservice/common";
 import jwt from "jsonwebtoken";
 
 const signupController = async (req: Request, res: Response, next: any) : Promise<any> => {

@@ -21,8 +21,8 @@ const page = () => {
   }, [])
 
   return (
-    <div>
-      
+    <div className='flex justify-center items-center h-screen'>
+      <h1 className='text-2xl font-bold text-white'>Signing out...</h1>
     </div>
   )
 }

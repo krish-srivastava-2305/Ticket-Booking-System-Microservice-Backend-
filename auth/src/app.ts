@@ -1,8 +1,7 @@
 import express, { json } from "express";
 import cookieSession from "cookie-session";
-import { errorHandler } from "./middlewares/error-handler.middleware";
-import { NotFoundError } from "./errors/not-found-error";
-
+import { errorHandler } from "@ksticketinservice/common";
+import { NotFoundError } from "@ksticketinservice/common";
 
 const app = express();
 

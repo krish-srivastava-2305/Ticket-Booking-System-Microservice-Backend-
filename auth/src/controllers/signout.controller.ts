@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestErroor } from "../errors/bad-request-error";
+import { BadRequestErroor } from "@ksticketinservice/common";
 
 const signoutController = async (req: Request, res: Response, next: NextFunction) => {
     try {

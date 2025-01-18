@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult } from "express-validator";
-import { RequestValidationError } from "../errors/request-validation.error";
+import { RequestValidationError } from "@ksticketinservice/common";
 import { User } from "../models/user.model";
-import { BadRequestErroor } from "../errors/bad-request-error";
+import { BadRequestErroor } from "@ksticketinservice/common";
 import { Password } from "../services/password.service";
 import jwt from "jsonwebtoken"
 
