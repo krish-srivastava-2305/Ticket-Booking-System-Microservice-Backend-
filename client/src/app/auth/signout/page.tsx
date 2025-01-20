@@ -9,7 +9,7 @@ const page = () => {
   useEffect(() => {
     const handleSignOut = async () => {
         try {
-            const response = await axios.post('/api/users/signout');
+            const response = await axios.post('https://ticketing.dev/api/users/signout');
             if(response.status === 200) {
                 router.push('/');
             }

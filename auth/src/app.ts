@@ -6,7 +6,7 @@ import { NotFoundError } from "@ksticketinservice/common";
 const app = express();
 
 // 1. Middleware setup
-app.set("trust proxy", true);
+// app.set("trust proxy", true);
 app.use(json());
 app.use(cookieSession({
     signed: false,

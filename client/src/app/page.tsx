@@ -4,16 +4,16 @@ import { fetchUser } from "@/util/fetchCookie";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(false)
   
-  useEffect(() => {
-    const token = fetchUser()
-    if(token !== null) {
-      setIsLoggedIn(true)
-    } else {
-      setIsLoggedIn(false)
-    }
-  }, [])
+  // useEffect(() => {
+  //   const token = fetchUser()
+  //   if(token !== null) {
+  //     setIsLoggedIn(true)
+  //   } else {
+  //     setIsLoggedIn(false)
+  //   }
+  // }, [])
 
   return (
     <div className="h-screen w-full bg-black">
