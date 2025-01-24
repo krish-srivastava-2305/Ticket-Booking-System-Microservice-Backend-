@@ -9,8 +9,8 @@ export const getTicketByIdController = async (req: Request, res: Response, next:
         if(!errors.isEmpty()){
             throw new RequestValidationError(errors.array());
         }
-        const id = req.params.id;
-        const ticket = await Ticket.findById(id);
+        const id = req.params.id as string;
+        const ticket = await Ticket.findOne({ _id: id });
         if(!ticket){
             throw new NotFoundError()
         }

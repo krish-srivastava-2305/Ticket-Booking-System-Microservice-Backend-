@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/get-ticket/:id",
     [
-        param("id").isEmpty().isMongoId().withMessage("No Ticket ID found")
+        param("id").isMongoId().withMessage("No Ticket ID found"),
     ],
     authUser,
     getTicketByIdController

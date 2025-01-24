@@ -6,7 +6,6 @@ import { Ticket } from "../models/ticket.model";
 export const createTicketController = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const errors = validationResult(req);
-    console.log(errors.array())
     if(!errors.isEmpty()) {
         throw new RequestValidationError(errors.array());
     }
@@ -14,7 +13,7 @@ export const createTicketController = async (req: Request, res: Response, next: 
     const userId = req.currentUser!.id as string;
     const ticket = Ticket.build({ title, price, userId });
     await ticket.save();
-    res.status(201).send({ title, price });
+    res.status(201).send({ title, price, id: ticket._id });
     } catch (error) {
         next(error)
     }
