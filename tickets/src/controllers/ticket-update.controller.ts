@@ -2,6 +2,8 @@ import { BadRequestErroor, NotFoundError, RequestValidationError } from "@kstick
 import { Ticket } from "../models/ticket.model";
 import { NextFunction, Request, Response } from "express"
 import { validationResult } from "express-validator";
+import { TicketPublisher } from "../events/publishers";
+import { natsWrapper } from "../events/init";
 
 export const ticketUpdateController = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -31,7 +33,15 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
         ticket.set({title, price});
         await ticket.save();
 
-        // 6. Send the updated ticket
+        // 6. Publish the ticket updated event
+        new TicketPublisher(natsWrapper.client).publish("ticket.updated", {
+            id: ticket._id,
+            title: ticket.title,
+            price: ticket.price,
+            userId: ticket.userId
+        });
+
+        // 7. Send the updated ticket
         res.status(200).send({ticket})
     } catch (error) {
         next(error)

@@ -16,6 +16,8 @@ spec:
         - name: tickets
           image: krishsrivastava/tickets
           env:
+            - name: NATS_URL
+              value: nats://nats-srv:6222
             - name: MONGO_URI
               value: mongodb://tickets-mongo-cluster-srv:27017/tickets
             - name: JWT_SECRET_KEY

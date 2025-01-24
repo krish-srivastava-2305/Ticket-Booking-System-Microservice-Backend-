@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 
-// Database connection and server startupp
+// Database connection and server startup
 const connect = async () => {
     if(!process.env.JWT_SECRET_KEY || !process.env.MONGO_URI) {
         throw new Error("JWT_SECRET_KEY or MONGO_URI is not defined");
