@@ -1,7 +1,7 @@
 import { Publisher } from "@ksticketinservice/common";
 
-export class TicketPublisher extends Publisher {
-    name = "tickets";
-    subject = ["ticket.>"];
+export class OrderPublisher extends Publisher {
+    name = "orders";
+    subject = ["order.>"];
 }
 

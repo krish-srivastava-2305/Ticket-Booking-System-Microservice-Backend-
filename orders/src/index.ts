@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./events/init";
 
-// Database connection and server startupp
+// Database connection and server startuppp
 const connect = async () => {
 
     if(!process.env.JWT_SECRET_KEY || !process.env.MONGO_URI || !process.env.NATS_URL) {

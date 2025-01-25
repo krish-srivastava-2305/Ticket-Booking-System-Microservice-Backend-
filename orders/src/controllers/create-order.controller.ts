@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { Order } from "../models/orders.model";
-import { BadRequestErroor, NotFoundError, OrderStatus, RequestValidationError } from "@ksticketinservice/common";
+import { BadRequestErroor, NotFoundError, RequestValidationError } from "@ksticketinservice/common";
 import { Ticket } from "../models/tickets.model";
 import { validationResult } from "express-validator";
+import { OrderPublisher } from "../events/publishers";
+import { natsWrapper } from "../events/init";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -12,8 +14,17 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
             throw new RequestValidationError(errors.array());
         }
 
+        // to test on postman
+        // const dummyTicket = Ticket.build({
+        //     title: "test",
+        //     price: 100,
+        //     version: 1
+        // });
+        // await dummyTicket.save();
+
         // get the ticket id from the request body
         const { ticket } = req.body;
+        // const ticket = dummyTicket._id; // to test on postman
         const userId = req.currentUser?.id as string;
 
         // get the ticket from the database
@@ -35,14 +46,26 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
         // create the order
         const order = Order.build({
             userId,
-            ticket,
-            status: OrderStatus.Created,
+            ticket: existingTicket,
+            status: "created",
             expiresAt: expirationTime
         });
 
         await order.save();
 
         // Publish an event for the new order
+        new OrderPublisher(natsWrapper.client).publish("order.created", {
+            id: order.id,
+            ticket: {
+                id: order.ticket.id,
+                price: order.ticket.price
+            },
+            userId: order.userId,
+            status: order.status,
+            expiresAt: order.expiresAt.toISOString()
+        })
+
+        console.log("Order created event published");
 
         res.status(201).send(order);
     } catch (error) {

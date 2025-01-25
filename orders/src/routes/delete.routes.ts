@@ -1,13 +1,16 @@
-import { authUser, currentUserMiddleware } from "@ksticketinservice/common";
-import { Request, Response, Router } from "express";
+import { authUser } from "@ksticketinservice/common";
+import { Router } from "express";
+import { param } from "express-validator";
+import { deleteOrder } from "../controllers/delete-order.controller";
 
 const router = Router();
 
 router.delete("/delete/:orderId", 
-    currentUserMiddleware, 
     authUser,
-    async (req: Request, res: Response) => {
-        res.send("Hello World");
-});
+    [
+        param("orderId").isMongoId().withMessage("Invalid orderId")
+    ],
+    deleteOrder
+);
 
 export { router as deleteOrderRouter }

@@ -5,8 +5,7 @@ import { param } from "express-validator";
 
 const router = Router();
 
-router.get("/:orderId", 
-    currentUserMiddleware, 
+router.get("/:orderId",
     authUser,   
     [
         param("orderId").isMongoId().withMessage("Invalid orderId")

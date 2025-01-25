@@ -1,13 +1,12 @@
 import { authUser, currentUserMiddleware } from "@ksticketinservice/common";
 import { Request, Response, Router } from "express";
+import { getUserOrders } from "../controllers/get-user-orders.controller";
 
 const router = Router();
 
 router.get("/", 
-    currentUserMiddleware, 
     authUser, 
-    async (req: Request, res: Response) => {
-        res.send("Hello World");
-});
+    getUserOrders
+    );
 
 export { router as getOrdersRouter };

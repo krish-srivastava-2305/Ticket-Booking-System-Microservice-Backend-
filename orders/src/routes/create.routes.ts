@@ -6,7 +6,6 @@ import { createOrder } from "../controllers/create-order.controller";
 const router = Router();
 
 router.post("/create", 
-    currentUserMiddleware,
     authUser,
     [
         body("ticket")
