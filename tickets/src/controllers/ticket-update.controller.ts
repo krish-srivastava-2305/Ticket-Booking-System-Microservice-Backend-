@@ -30,7 +30,7 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
         }
 
         // 5. Update the ticket
-        ticket.set({title, price});
+        ticket.set({title, price, version: ticket.version + 1});
         await ticket.save();
 
         // 6. Publish the ticket updated event
@@ -38,7 +38,8 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
             id: ticket._id,
             title: ticket.title,
             price: ticket.price,
-            userId: ticket.userId
+            userId: ticket.userId,
+            version: ticket.version
         });
 
         // 7. Send the updated ticket

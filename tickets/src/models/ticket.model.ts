@@ -1,15 +1,17 @@
 import mongoose, { Schema } from "mongoose";
 
 interface TicketAttrs {
-    userId: string;
+    userId: string,
     title: string,
-    price: string
+    price: string,
+    version: number
 }
 
 interface TicketDoc extends mongoose.Document {
-    userId: string;
+    userId: string,
     title: string,
-    price: string
+    price: string,
+    version: number
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -28,6 +30,11 @@ const ticketSchema: Schema<TicketDoc, TicketModel> = new Schema({
     price: {
         type: String,
         required: true
+    },
+    version: {
+        type: Number,
+        required: true,
+        default: 1
     }
 });
 
