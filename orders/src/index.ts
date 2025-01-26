@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./events/init";
+import TicketListener from "./events/listener";
+import { OrderPublisher } from "./events/publishers";
 
 // Database connection and server startuppp
 const connect = async () => {
@@ -24,6 +26,12 @@ const connect = async () => {
             natsWrapper.client.close();
             process.exit(0);
         });
+
+        new OrderPublisher(natsWrapper.client).createStream();
+
+        // Create and start the listener
+        const listener = new TicketListener(natsWrapper.client);
+        setInterval(() => listener.listen(), 1000); // This will now properly subscribe to eventsssss
 
         // Connect to MongoDB
         await mongoose.connect(process.env.MONGO_URI);

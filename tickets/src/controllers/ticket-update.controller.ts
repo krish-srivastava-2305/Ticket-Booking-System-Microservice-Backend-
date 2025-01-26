@@ -34,7 +34,9 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
         await ticket.save();
 
         // 6. Publish the ticket updated event
-        new TicketPublisher(natsWrapper.client).publish("ticket.updated", {
+        const publisher = new TicketPublisher(natsWrapper.client);
+
+        publisher.publish("ticket.updated", {
             id: ticket._id,
             title: ticket.title,
             price: ticket.price,

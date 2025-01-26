@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./events/init";
+import { TicketPublisher } from "./events/publishers";
+import { OrderListener } from "./events/listener";
 
 // Database connection and server startup
 const connect = async () => {
@@ -13,7 +15,7 @@ const connect = async () => {
         // Connect to NATS
         await natsWrapper.connect(process.env.NATS_URL);
 
-        // Handle NATS connection close
+        // Handle NATS connection closeeee
         process.on("SIGINT", () => { 
             console.log("SIGINT received");
             natsWrapper.client.close();
@@ -24,6 +26,13 @@ const connect = async () => {
             natsWrapper.client.close();
             process.exit(0);
         });
+
+        new TicketPublisher(natsWrapper.client).createStream();
+
+        const listener = new OrderListener(natsWrapper.client)
+        setInterval(() => {
+            listener.listen();
+        }, 1000);
 
         // Connect to MongoDB
         await mongoose.connect(process.env.MONGO_URI);

@@ -17,7 +17,9 @@ export const createTicketController = async (req: Request, res: Response, next: 
     const ticket = Ticket.build({ title, price, userId, version: 1 });
     await ticket.save();
 
-    new TicketPublisher(natsWrapper.client).publish("ticket.created", {
+    const publisher = new TicketPublisher(natsWrapper.client);
+
+    publisher.publish("ticket.created", {
         id: ticket._id,
         title: ticket.title,
         price: ticket.price,
