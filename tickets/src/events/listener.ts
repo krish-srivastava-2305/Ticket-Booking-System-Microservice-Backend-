@@ -7,11 +7,14 @@ export class OrderListener extends Listener {
     durableName: string = "orders-service-durable";
 
     onMessage(data: JsMsg): void {
-        const { id, version, userId, status, ticket } = JSON.parse(data.data.toString());
+        
         if(data.subject === "order.created") {
+            const { id, version, userId, status, ticket } = JSON.parse(data.data.toString());
             this.orderCreated(id, ticket);
         }
         if(data.subject === "order.cancelled") {
+            const { id, ticket } = JSON.parse(data.data.toString());
+            console.log("Order cancelled", id, ticket);
             this.orderCancelled(id, ticket);
         }
     }
@@ -25,8 +28,8 @@ export class OrderListener extends Listener {
         await existingTicket.save();
     }
 
-    async orderCancelled(id: string, ticket: { id: string }) {
-        const existingTicket = await Ticket.findById(ticket.id);
+    async orderCancelled(id: string, ticket: string) {
+        const existingTicket = await Ticket.findById(ticket);
         if(!existingTicket) {
             throw new NotFoundError();
         }

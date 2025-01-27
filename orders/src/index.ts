@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./events/init";
-import TicketListener from "./events/listener";
+import { OrderListener, TicketListener } from "./events/listener";
 import { OrderExpiredPublisher, OrderPublisher } from "./events/publishers";
 
 // Database connection and server startuppp
@@ -22,7 +22,7 @@ const connect = async () => {
             process.exit(0);
          });
         process.on("SIGTERM", () => {
-            console.log("SIGTERM received");
+            console.log("SIGTERMMMMMMMM received");
             natsWrapper.client.close();
             process.exit(0);
         });
@@ -31,8 +31,10 @@ const connect = async () => {
         new OrderExpiredPublisher(natsWrapper.client).createStream();
 
         // Create and start the listener
-        const listener = new TicketListener(natsWrapper.client);
-        setInterval(() => listener.listen(), 1000); // This will now properly subscribe to eventsssss
+        const ticketListener = new TicketListener(natsWrapper.client);
+        setInterval(() => ticketListener.listen(), 1000);
+        const orderListener = new OrderListener(natsWrapper.client);
+        setInterval(() => orderListener.listen(), 1000);
 
         // Connect to MongoDB
         await mongoose.connect(process.env.MONGO_URI);

@@ -1,11 +1,11 @@
-import { Listener, OrderStatus } from "@ksticketinservice/common";
+import { Listener } from "@ksticketinservice/common";
 import { JsMsg } from "nats";
 import { Ticket } from "../models/tickets.model";
 import { Order } from "../models/orders.model";
 import { OrderPublisher } from "./publishers";
 import { natsWrapper } from "./init";
 
-class TicketListener extends Listener {
+export class TicketListener extends Listener {
     name = "tickets";
     durableName = "ticket-listener";
     
@@ -51,31 +51,31 @@ class TicketListener extends Listener {
     }
 }
 
-class OrderListener extends Listener {
+export class OrderListener extends Listener {
     name = "order-expired";
     durableName = "order-listener";
 
     async onMessage(msg: JsMsg): Promise<void> {
-        const { orderId } = JSON.parse(msg.data.toString());
-        console.log("Order expired", orderId);
-        const order = await Order.findById(orderId);
-        if (!order) {
-            throw new Error("Order not found");
-        }
-        if (order.status === OrderStatus.Completed) {
+        try {
+            const { orderId } = JSON.parse(msg.data.toString());
+            const order = await Order.findById(orderId);
+            if (!order) {
+                throw new Error("Order not found");
+            }
+            if (order.status === "completed") {
+                return;
+            }
+            order.set({
+                status: "cancelled"
+            });
             new OrderPublisher(natsWrapper.client).publish("order.cancelled", {
                 id: order.id,
                 ticket: order.ticket
             });
-            msg.ack();
-            return;
+            await order.save();
+        } catch (error) {
+            console.error("Error processing order expired event", error);
         }
-        order.set({
-            status: OrderStatus.Cancelled
-        });
-        await order.save();
     }
 }
-
-export default TicketListener;
 

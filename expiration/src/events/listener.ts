@@ -13,7 +13,7 @@ export class OrderCreatedListener extends Listener {
             await expirationQueue.add("expiration-queue", {
                 orderId,
             }, {
-                delay: 100*60*15
+                delay: 1000*60*15
             });
             console.log("Expiration job added for orderId", orderId);
         } catch (error) {
