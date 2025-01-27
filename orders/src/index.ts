@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./events/init";
 import TicketListener from "./events/listener";
-import { OrderPublisher } from "./events/publishers";
+import { OrderExpiredPublisher, OrderPublisher } from "./events/publishers";
 
 // Database connection and server startuppp
 const connect = async () => {
@@ -28,6 +28,7 @@ const connect = async () => {
         });
 
         new OrderPublisher(natsWrapper.client).createStream();
+        new OrderExpiredPublisher(natsWrapper.client).createStream();
 
         // Create and start the listener
         const listener = new TicketListener(natsWrapper.client);

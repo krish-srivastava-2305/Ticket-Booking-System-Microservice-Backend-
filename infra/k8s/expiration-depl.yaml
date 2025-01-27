@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: krishsrivastava/expiration
+          env:
+            - name: NATS_URL
+              value: nats://nats-srv:4222
+            - name: REDIS_HOST
+              value: redis-cluster-srv
+            - name: REDIS_PORT
+              value: "6379"

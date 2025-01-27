@@ -3,7 +3,7 @@ import { Order } from "../models/orders.model";
 import { BadRequestErroor, NotFoundError, RequestValidationError } from "@ksticketinservice/common";
 import { Ticket } from "../models/tickets.model";
 import { validationResult } from "express-validator";
-import { OrderPublisher } from "../events/publishers";
+import { OrderExpiredPublisher, OrderPublisher } from "../events/publishers";
 import { natsWrapper } from "../events/init";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +54,9 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
         await order.save();
 
         // Publish an event for the new order
-        new OrderPublisher(natsWrapper.client).publish("order.created", {
+        const publisher = new OrderPublisher(natsWrapper.client)
+
+        publisher.publish("order.created", {
             id: order.id,
             ticket: {
                 id: order.ticket.id,
@@ -64,6 +66,11 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
             status: order.status,
             expiresAt: order.expiresAt.toISOString()
         })
+
+        new OrderExpiredPublisher(natsWrapper.client).publish("expiration.order", {
+            orderId: order.id
+        })
+
 
         console.log("Order created event published");
 

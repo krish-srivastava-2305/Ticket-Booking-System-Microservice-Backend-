@@ -1,6 +1,9 @@
-import { Listener } from "@ksticketinservice/common";
+import { Listener, OrderStatus } from "@ksticketinservice/common";
 import { JsMsg } from "nats";
 import { Ticket } from "../models/tickets.model";
+import { Order } from "../models/orders.model";
+import { OrderPublisher } from "./publishers";
+import { natsWrapper } from "./init";
 
 class TicketListener extends Listener {
     name = "tickets";
@@ -45,6 +48,32 @@ class TicketListener extends Listener {
         ticket.set({ title, price, version });
         await ticket.save();
         console.log('Ticket updated:', ticket);
+    }
+}
+
+class OrderListener extends Listener {
+    name = "order-expired";
+    durableName = "order-listener";
+
+    async onMessage(msg: JsMsg): Promise<void> {
+        const { orderId } = JSON.parse(msg.data.toString());
+        console.log("Order expired", orderId);
+        const order = await Order.findById(orderId);
+        if (!order) {
+            throw new Error("Order not found");
+        }
+        if (order.status === OrderStatus.Completed) {
+            new OrderPublisher(natsWrapper.client).publish("order.cancelled", {
+                id: order.id,
+                ticket: order.ticket
+            });
+            msg.ack();
+            return;
+        }
+        order.set({
+            status: OrderStatus.Cancelled
+        });
+        await order.save();
     }
 }
 

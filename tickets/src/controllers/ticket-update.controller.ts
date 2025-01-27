@@ -29,11 +29,16 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
             throw new BadRequestErroor("You are not authorized to update this ticket")
         }
 
-        // 5. Update the ticket
+        // 5. Check if the ticket is reserved
+        if(ticket.orderId) {
+            throw new BadRequestErroor("Ticket is reserved");
+        }
+
+        // 6. Update the ticket
         ticket.set({title, price, version: ticket.version + 1});
         await ticket.save();
 
-        // 6. Publish the ticket updated event
+        // 7. Publish the ticket updated event
         const publisher = new TicketPublisher(natsWrapper.client);
 
         publisher.publish("ticket.updated", {
@@ -44,7 +49,7 @@ export const ticketUpdateController = async (req: Request, res: Response, next: 
             version: ticket.version
         });
 
-        // 7. Send the updated ticket
+        // 8. Send the updated ticket
         res.status(200).send({ticket})
     } catch (error) {
         next(error)

@@ -4,14 +4,16 @@ interface TicketAttrs {
     userId: string,
     title: string,
     price: string,
-    version: number
+    version: number,
+    orderId?: string
 }
 
 interface TicketDoc extends mongoose.Document {
     userId: string,
     title: string,
     price: string,
-    version: number
+    version: number,
+    orderId?: string
 }
 
 interface TicketModel extends mongoose.Model<TicketDoc> {
@@ -35,6 +37,10 @@ const ticketSchema: Schema<TicketDoc, TicketModel> = new Schema({
         type: Number,
         required: true,
         default: 1
+    },
+    orderId: {
+        type: String,
+        required: false
     }
 });
 
