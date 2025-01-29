@@ -5,7 +5,7 @@ import { ticketUpdateController } from "../controllers/ticket-update.controller"
 
 const router = Router();
 
-router.put("/update-ticket/:id",
+router.put("/:id",
     [
         param("id").isMongoId().withMessage("No Ticket ID found"),
         body("title").notEmpty().withMessage("Title is required"),

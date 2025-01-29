@@ -5,7 +5,7 @@ import { param } from "express-validator";
 
 const router = Router();
 
-router.get("/get-ticket/:id",
+router.get("/:id",
     [
         param("id").isMongoId().withMessage("No Ticket ID found"),
     ],

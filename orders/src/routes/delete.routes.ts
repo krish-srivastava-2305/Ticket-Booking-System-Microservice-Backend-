@@ -5,7 +5,7 @@ import { deleteOrder } from "../controllers/delete-order.controller";
 
 const router = Router();
 
-router.delete("/delete/:orderId", 
+router.delete("/:orderId", 
     authUser,
     [
         param("orderId").isMongoId().withMessage("Invalid orderId")
