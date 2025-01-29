@@ -88,7 +88,7 @@ The application follows a microservices architecture, consisting of the followin
   - Ensures secure handling of payment information.
   - Provides endpoints for initiating and confirming payments.
 
-![Payment Service Architecture](path/to/your/payment-service-architecture.png)
+![Payment Service Architecture](./architectures/Payment.jpg)
 
 ## Technologies
 
